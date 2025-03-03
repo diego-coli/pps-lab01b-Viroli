@@ -1,20 +1,52 @@
 package e1;
 
-class CoreBankAccount {
+class CoreBankAccount implements BankAccount{
 
-    //Concrete class that implements BankAccounts methods
+    private int balance;
+    private BankAccount bankAccount;
 
-    private int balance = 0;
+    public CoreBankAccount(BankAccount bankAccount){
+        this.bankAccount = bankAccount;
+        this.balance = 0;
+    }
 
     public int getBalance() {
         return this.balance;
     }
 
-    public void deposit(int amount) {
-        this.balance = this.balance + amount;
+    public int getFee(int amount){
+        if(bankAccount != null){
+            return bankAccount.getFee(amount);
+        }
+        else{
+            throw new IllegalStateException("\nBank Account type not set");
+        }
+    }
+
+    public int getOverdraft(){
+        if(bankAccount != null){
+            return bankAccount.getOverdraft();
+        }
+        else{
+            throw new IllegalStateException("\nBank Account type not set");
+        }
     }
 
     public void withdraw(int amount) {
-        this.balance = this.balance - amount;
+        if(bankAccount != null){
+            if(this.balance >= (amount + this.getFee(amount))){
+                this.balance = this.balance - amount - this.getFee(amount);
+            }
+            else{
+                throw new IllegalStateException("\nNot enough money");
+            }
+        }
+        else{
+            throw new IllegalStateException("\nBank Account type not set");
+        }
+    }
+
+    public void deposit(int amount) {
+        this.balance = this.balance + amount;
     }
 }

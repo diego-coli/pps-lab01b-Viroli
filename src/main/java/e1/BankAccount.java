@@ -2,9 +2,16 @@ package e1;
 
 public interface BankAccount {
 
-    int getBalance();
+    /**
+     * Gold =   fee 0,              overdraft -500
+     * Silver = fee 1,              overdraft 0
+     * Bronze = conditional fee,    overdraft 0
+     *
+     * @return
+     */
 
-    void deposit(int amount);
+    int getFee(int amount);
 
-    void withdraw(int amount);
+    int getOverdraft();
+
 }
