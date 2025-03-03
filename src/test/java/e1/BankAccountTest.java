@@ -9,19 +9,7 @@ public class BankAccountTest {
 
     public static final int INITIAL_BALANCE = 0;
     public static final int DEPOSIT = 150;
-    public static final int EXPECTED_BALANCE = 150;
-    public static final int AMOUNT = 100;
-    public static final int BRONZE_HIGH_WITHDRAW = 140;
-    public static final int BRONZE_LOW_WITHDRAW = 90;
-    public static final int GOLD_FEE = 0;
-    public static final int SILVER_FEE = 1;
-    public static final int BRONZE_FEE_LOW_WITHDRAW = 0;
-    public static final int BRONZE_FEE_HIGH_WITHDRAW = 1;
-    public static final int EXPECTED_BRONZE_BALANCE_HIGH_WITHDRAW = 9;
-    public static final int EXPECTED_BRONZE_BALANCE_LOW_WITHDRAW = 60;
-    public static final int EXPECTED_SILVER_BALANCE = 49;
-    public static final int EXPECTED_GOLD_BALANCE = 50;
-    public static final int TOO_HIGH_WITHDRAW = 500;
+    public static final int WITHDRAW = 100;
     private BankAccount bankAccount;
     private CoreBankAccount core;
     private CoreBankAccount gold;
@@ -47,74 +35,89 @@ public class BankAccountTest {
 
     @Test
     void tryToDeposit(){
+        int expectedBalance = 150;
         gold.deposit(DEPOSIT);
         silver.deposit(DEPOSIT);
         bronze.deposit(DEPOSIT);
         assertAll(
-                () -> assertEquals(EXPECTED_BALANCE, gold.getBalance()),
-                () -> assertEquals(EXPECTED_BALANCE, silver.getBalance()),
-                () -> assertEquals(EXPECTED_BALANCE, bronze.getBalance())
+                () -> assertEquals(expectedBalance, gold.getBalance()),
+                () -> assertEquals(expectedBalance, silver.getBalance()),
+                () -> assertEquals(expectedBalance, bronze.getBalance())
         );
     }
 
     @Test
     void getGoldFee(){
-        assertEquals(GOLD_FEE, gold.getFee(AMOUNT));
+        int expectedFee = 0;
+        assertEquals(expectedFee, gold.getFee(WITHDRAW));
     }
 
     @Test
     void getSilverFee(){
-        assertEquals(SILVER_FEE, silver.getFee(AMOUNT));
+        int expectedFee = 1;
+        assertEquals(expectedFee, silver.getFee(WITHDRAW));
     }
 
     @Test
     void getBronzeFeeLowWithdraw(){
-        assertEquals(BRONZE_FEE_LOW_WITHDRAW, bronze.getFee(AMOUNT - 1));
+        int expectedFee = 0;
+        assertEquals(expectedFee, bronze.getFee(WITHDRAW - 1));
     }
 
     @Test
     void getBronzeFeeHighWithdraw(){
-        assertEquals(BRONZE_FEE_HIGH_WITHDRAW, bronze.getFee(AMOUNT));
+        int expectedFee = 1;
+        assertEquals(expectedFee, bronze.getFee(WITHDRAW));
     }
 
     @Test
     void goldWithdraw(){
+        int expectedBalance = 50;
         gold.deposit(DEPOSIT);
-        gold.withdraw(AMOUNT);
-        assertEquals(EXPECTED_GOLD_BALANCE, gold.getBalance());
+        gold.withdraw(WITHDRAW);
+        assertEquals(expectedBalance, gold.getBalance());
     }
 
     @Test
     void silverWithdraw(){
+        int expectedBalance = 49;
         silver.deposit(DEPOSIT);
-        silver.withdraw(AMOUNT);
-        assertEquals(EXPECTED_SILVER_BALANCE, silver.getBalance());
+        silver.withdraw(WITHDRAW);
+        assertEquals(expectedBalance, silver.getBalance());
     }
 
     @Test
     void bronzeLowWithdraw(){
+        int amount = 90;
+        int expectedBalance = 60;
         bronze.deposit(DEPOSIT);
-        bronze.withdraw(BRONZE_LOW_WITHDRAW);
-        assertEquals(EXPECTED_BRONZE_BALANCE_LOW_WITHDRAW, bronze.getBalance());
+        bronze.withdraw(amount);
+        assertEquals(expectedBalance, bronze.getBalance());
     }
 
     @Test
     void bronzeHighWithdraw(){
+        int amount = 140;
+        int expectedBalance = 9;
         bronze.deposit(DEPOSIT);
-        bronze.withdraw(BRONZE_HIGH_WITHDRAW);
-        assertEquals(EXPECTED_BRONZE_BALANCE_HIGH_WITHDRAW, bronze.getBalance());
+        bronze.withdraw(amount);
+        assertEquals(expectedBalance, bronze.getBalance());
     }
 
     @Test
     void notEnoughMoney(){
+        int expectedBalanceGold = -350;
+        int expectedBalanceSilver = 150;
+        int expectedBalanceBronze = 150;
+        int amount = 500;
         tryToDeposit();
+        gold.withdraw(amount);
         assertAll(
-                () -> assertThrows(IllegalStateException.class, () -> gold.withdraw(TOO_HIGH_WITHDRAW)),
-                () -> assertThrows(IllegalStateException.class, () -> silver.withdraw(TOO_HIGH_WITHDRAW)),
-                () -> assertThrows(IllegalStateException.class, () -> bronze.withdraw(TOO_HIGH_WITHDRAW)),
-                () -> assertEquals(EXPECTED_BALANCE, gold.getBalance()),
-                () -> assertEquals(EXPECTED_BALANCE, silver.getBalance()),
-                () -> assertEquals(EXPECTED_BALANCE, bronze.getBalance())
+                () -> assertThrows(IllegalStateException.class, () -> silver.withdraw(amount)),
+                () -> assertThrows(IllegalStateException.class, () -> bronze.withdraw(amount)),
+                () -> assertEquals(expectedBalanceGold, gold.getBalance()),
+                () -> assertEquals(expectedBalanceSilver, silver.getBalance()),
+                () -> assertEquals(expectedBalanceBronze, bronze.getBalance())
                 );
     }
 }

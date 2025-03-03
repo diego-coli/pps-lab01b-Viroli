@@ -34,7 +34,8 @@ class CoreBankAccount implements BankAccount{
 
     public void withdraw(int amount) {
         if(bankAccount != null){
-            if(this.balance >= (amount + this.getFee(amount))){
+            int possibleBalance = this.balance - amount - this.getFee(amount);
+            if(possibleBalance > this.getOverdraft()){
                 this.balance = this.balance - amount - this.getFee(amount);
             }
             else{
