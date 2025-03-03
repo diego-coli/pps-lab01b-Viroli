@@ -3,8 +3,7 @@ package e1;
 public class BronzeBankAccount implements BankAccount{
 
     /**
-     * Bronze = conditional fee,    overdraft 0
-     * @return
+     * BRONZE ACCOUNT -> fee = 0 if withdraw<100, otherwise fee = 1, overdraft = 0
      */
 
     private CoreBankAccount coreBankAccount;

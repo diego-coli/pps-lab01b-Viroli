@@ -3,8 +3,7 @@ package e1;
 public class GoldBankAccount implements BankAccount {
 
     /**
-     * Gold =   fee 0,              overdraft -500
-     * @return
+     * GOLD ACCOUNT -> fee = 0, overdraft = -500
      */
 
     private CoreBankAccount coreBankAccount;

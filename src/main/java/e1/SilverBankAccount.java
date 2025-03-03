@@ -3,8 +3,7 @@ package e1;
 public class SilverBankAccount implements BankAccount{
 
     /**
-     * Silver = fee 1,              overdraft 0
-     * @return
+     * SILVER ACCOUNT -> fee = 1, overdraft = 0
      */
 
     private CoreBankAccount coreBankAccount;
