@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BankAccountTest {
 
-    public static final int INITIAL_BALANCE = 0;
     public static final int DEPOSIT = 150;
     public static final int WITHDRAW = 100;
     private BankAccount bankAccount;
@@ -26,10 +25,11 @@ public class BankAccountTest {
 
     @Test
     void isInitiallyEmpty(){
+        int initialBalance = 0;
         assertAll(
-                () -> assertEquals(INITIAL_BALANCE, gold.getBalance()),
-                () -> assertEquals(INITIAL_BALANCE, silver.getBalance()),
-                () -> assertEquals(INITIAL_BALANCE, bronze.getBalance())
+                () -> assertEquals(initialBalance, gold.getBalance()),
+                () -> assertEquals(initialBalance, silver.getBalance()),
+                () -> assertEquals(initialBalance, bronze.getBalance())
                 );
     }
 
