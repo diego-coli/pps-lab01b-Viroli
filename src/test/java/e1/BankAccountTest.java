@@ -25,11 +25,11 @@ public class BankAccountTest {
 
     @Test
     void isInitiallyEmpty(){
-        int initialBalance = 0;
+        int expectedBalance = 0;
         assertAll(
-                () -> assertEquals(initialBalance, gold.getBalance()),
-                () -> assertEquals(initialBalance, silver.getBalance()),
-                () -> assertEquals(initialBalance, bronze.getBalance())
+                () -> assertEquals(expectedBalance, gold.getBalance()),
+                () -> assertEquals(expectedBalance, silver.getBalance()),
+                () -> assertEquals(expectedBalance, bronze.getBalance())
                 );
     }
 
@@ -61,13 +61,15 @@ public class BankAccountTest {
     @Test
     void getBronzeFeeLowWithdraw(){
         int expectedFee = 0;
-        assertEquals(expectedFee, bronze.getFee(WITHDRAW - 1));
+        int lowWithdraw = 99;
+        assertEquals(expectedFee, bronze.getFee(lowWithdraw));
     }
 
     @Test
     void getBronzeFeeHighWithdraw(){
         int expectedFee = 1;
-        assertEquals(expectedFee, bronze.getFee(WITHDRAW));
+        int highWithdrow = 100;
+        assertEquals(expectedFee, bronze.getFee(highWithdrow));
     }
 
     @Test
@@ -105,19 +107,26 @@ public class BankAccountTest {
     }
 
     @Test
-    void notEnoughMoney(){
-        int expectedBalanceGold = -350;
-        int expectedBalanceSilver = 150;
-        int expectedBalanceBronze = 150;
+    void checkGoldOverdraft(){
+        int expectedBalance = -350;
         int amount = 500;
-        tryToDeposit();
+        tryToDeposit();             //deposit 150
         gold.withdraw(amount);
+        assertEquals(expectedBalance, gold.getBalance());
+    }
+
+    @Test
+    void notEnoughMoney(){
+        int expectedBalance = 150;
+        int amount = 1000;
+        tryToDeposit();             //deposit 150
         assertAll(
+                () -> assertThrows(IllegalStateException.class, () -> gold.withdraw(amount)),
                 () -> assertThrows(IllegalStateException.class, () -> silver.withdraw(amount)),
                 () -> assertThrows(IllegalStateException.class, () -> bronze.withdraw(amount)),
-                () -> assertEquals(expectedBalanceGold, gold.getBalance()),
-                () -> assertEquals(expectedBalanceSilver, silver.getBalance()),
-                () -> assertEquals(expectedBalanceBronze, bronze.getBalance())
+                () -> assertEquals(expectedBalance, gold.getBalance()),
+                () -> assertEquals(expectedBalance, silver.getBalance()),
+                () -> assertEquals(expectedBalance, bronze.getBalance())
                 );
     }
 }
